@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PlayChess</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="icon" href="favicon.ico">
+
+    <!-- jQuery (Required for Chessboard.js) -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- Chessboard.js styles -->
+    <link rel="stylesheet" href="/css/chessboard-1.0.0.min.css">
+    <!-- Custom Chessboard styles -->
+    <link rel="stylesheet" href="/css/custom-chessboard.css">
+    <!-- Chess.js -->
+    <script src="/js/chess.min.js"></script>
+    <!-- Chessboard.js -->
+    <script src="/js/chessboard-1.0.0.min.js"></script>
+    <!-- Socket.io -->
+    <script src="/socket.io/socket.io.js"></script>
+</head>
+<body id="game-body">
+    <div id="player-info">
+        <p>Player 1 (Black): <span id="player1-name">Waiting for player 1...</span></p>
+        <p>Player 2 (White): <span id="player2-name">Waiting for player 2...</span></p>
+    </div>
+
+    <!-- Chessboard display -->
+    <div id="board" style="width: 300px"></div>
+
+    <!-- Game status -->
+    <p id="status">Game status will appear here...</p>
+
+    <script src="/js/game.js"></script>
+</body>
+</html>

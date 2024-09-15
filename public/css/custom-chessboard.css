@@ -1,0 +1,22 @@
+/* Example CSS to use custom images for chess pieces */
+
+/* Make sure this path matches where you store your images */
+.chessboard .piece {
+    background-image: url('/images/pieces/pieces.svg'); /* fallback */
+    background-size: contain;
+}
+
+/* Custom piece styles for individual pieces */
+.white .wK { background-image: url('public/images/pieces/wK.png'); }
+.white .wQ { background-image: url('public/images/pieces/wQ.png'); }
+.white .wR { background-image: url('public/images/pieces/wR.png'); }
+.white .wN { background-image: url('public/images/pieces/wN.png'); }
+.white .wB { background-image: url('public/images/pieces/wB.png'); }
+.white .wP { background-image: url('public/images/pieces/wP.png'); }
+
+.black .bK { background-image: url('public/images/pieces/bK.png'); }
+.black .bQ { background-image: url('public/images/pieces/bQ.png'); }
+.black .bR { background-image: url('public/images/pieces/bR.png'); }
+.black .bN { background-image: url('public/images/pieces/bN.png'); }
+.black .bB { background-image: url('public/images/pieces/bB.png'); }
+.black .bP { background-image: url('public/images/pieces/bP.png'); }

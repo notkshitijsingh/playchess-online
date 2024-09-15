@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PlayChess</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="icon" href="favicon.ico">
+</head>
+<body>
+    <h1>Play Chess Online</h1>
+    <img id="home" src="/game/img/home.png"/>
+    <div id="create-game">
+        <button id="createGameBtn">Create Game</button>
+    </div>
+    
+    <div id="game-link" style="display:none;">
+        <p>Share this link to play: <span id="gameURL"></span></p>
+        <button id="copyLinkBtn">Copy Link</button>
+        <img id="github-icon" src="/game/img/github.png"/>
+        <button id="followLinkBtn">Go to Game</button>
+    </div>
+
+    <script>
+        document.getElementById('github-icon').addEventListener('click', function(){
+            window.open("https://github.com/notkshitijsingh", "_blank");
+        });
+        const createGameBtn = document.getElementById('createGameBtn');
+        const gameLinkDiv = document.getElementById('game-link');
+        const gameURLSpan = document.getElementById('gameURL');
+        const copyLinkBtn = document.getElementById('copyLinkBtn');
+        const followLinkBtn = document.getElementById('followLinkBtn');
+
+        createGameBtn.addEventListener('click', function() {
+            const gameURL = window.location.href + 'game/' + Math.random().toString(36).substr(2, 9);
+            gameURLSpan.textContent = gameURL;
+            gameLinkDiv.style.display = 'block';
+        });
+
+        copyLinkBtn.addEventListener('click', function() {
+            const gameURL = gameURLSpan.textContent;
+            navigator.clipboard.writeText(gameURL).then(() => {
+                alert('Game link copied to clipboard');
+            }).catch(err => {
+                console.error('Failed to copy: ', err);
+            });
+        });
+
+        followLinkBtn.addEventListener('click', function() {
+            const gameURL = gameURLSpan.textContent;
+            window.location.href = gameURL;
+        });
+    </script>
+</body>
+</html>

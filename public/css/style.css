@@ -1,0 +1,107 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+
+body {
+    display: flex;
+    flex-direction: column;
+    color: black;
+    text-align: center;
+    font-family: "Inter", sans-serif;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.container {
+    width: 500px;
+    margin: 50px auto;
+    padding: 20px;
+    border: 5px solid #000000;
+    box-shadow: 10px 10px 0px #000000;
+}
+
+h1 {
+    font-weight: 600;
+    padding: 10px;
+    font-size: 32px;
+}
+
+input {
+    padding: 5px;
+    margin: 10px;
+    font-size: 16px;
+    background-color: #E0E0E0;
+    border: 1px solid #000000;
+}
+
+button {
+    font-size: 12px;
+    padding: 10px;
+    background-color: #C0C0C0;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #A0A0A0;
+    transition: 500ms;
+}
+
+.chess-board {
+    margin: 20px auto;
+}
+
+#timer {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 20px;
+}
+
+#timer1, #timer2 {
+    font-size: 20px;
+    background-color: #E0E0E0;
+    padding: 10px;
+    border: 2px solid black;
+}
+
+#home {
+    height: 40vh;
+    margin-bottom: 5vh;
+}
+
+#game-body {
+    background-image: url('/game/img/game_bg.jpg');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: auto;
+}
+
+#player1-name, #player2-name {
+    font-weight: 600;
+}
+
+#github-icon {
+    height: 34px;
+    transform: translateY(14px);
+    margin-inline: 5px;
+}
+
+#github-icon:hover {
+    cursor: pointer;
+    animation: shake 0.5s;
+    animation-iteration-count: infinite;
+}
+
+@keyframes shake {
+    0% { transform: translate(1px, 1px) rotate(0deg); }
+    10% { transform: translate(-1px, -2px) rotate(-1deg); }
+    20% { transform: translate(-3px, 0px) rotate(1deg); }
+    30% { transform: translate(3px, 2px) rotate(0deg); }
+    40% { transform: translate(1px, -1px) rotate(1deg); }
+    50% { transform: translate(-1px, 2px) rotate(-1deg); }
+    60% { transform: translate(-3px, 1px) rotate(0deg); }
+    70% { transform: translate(3px, 1px) rotate(-1deg); }
+    80% { transform: translate(-1px, -1px) rotate(1deg); }
+    90% { transform: translate(1px, 2px) rotate(0deg); }
+    100% { transform: translate(1px, -2px) rotate(-1deg); }
+}
