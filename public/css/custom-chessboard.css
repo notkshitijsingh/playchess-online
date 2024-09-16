@@ -20,3 +20,7 @@
 .black .bN { background-image: url('public/images/pieces/bN.png'); }
 .black .bB { background-image: url('public/images/pieces/bB.png'); }
 .black .bP { background-image: url('public/images/pieces/bP.png'); }
+
+.square-55d63 {
+    transition: background 0.25s ease;
+}

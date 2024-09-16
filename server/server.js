@@ -10,7 +10,7 @@ const io = socketIO(server);
 // Serve static files
 app.use(express.static(path.join(__dirname, '../public')));
 
-let rooms = {};
+let rooms = {}; // Store room data including players, game state (FEN), and assigned colors
 
 // Route for the game room
 app.get('/game/:roomID', (req, res) => {
@@ -25,27 +25,36 @@ io.on('connection', (socket) => {
         socket.join(roomID);
 
         if (!rooms[roomID]) {
-            rooms[roomID] = { player1: playerName, player2: null };
+            // Initialize room if not present, with an empty game state and players
+            rooms[roomID] = { player1: { name: playerName, color: null }, player2: null, fen: 'start' };
         } else if (!rooms[roomID].player2) {
-            rooms[roomID].player2 = playerName;
+            rooms[roomID].player2 = { name: playerName, color: null };
+            
+            // Randomly assign colors to the players
+            const randomColor = Math.random() > 0.5 ? 'white' : 'black';
+            rooms[roomID].player1.color = randomColor;
+            rooms[roomID].player2.color = randomColor === 'white' ? 'black' : 'white';
         }
 
-        const players = rooms[roomID];
-        
-        // Send updated player names to both players
+        const players = {
+            player1: rooms[roomID].player1.name,
+            player2: rooms[roomID].player2 ? rooms[roomID].player2.name : null,
+        };
+
+        // Send player names to both players
         io.to(roomID).emit('roomJoined', players);
 
-        const playerCount = Object.values(players).filter(Boolean).length;
+        const playerCount = rooms[roomID].player2 ? 2 : 1;
 
-        // Once both players have joined, assign them colors
-        if (playerCount === 1) {
-            socket.emit('ready', 'white');
-        } else if (playerCount === 2) {
-            io.to(roomID).emit('ready', 'black');
+        // Send game state and player colors once both players have joined
+        if (playerCount === 2) {
+            io.to(roomID).emit('ready', rooms[roomID].fen, rooms[roomID].player1.color, rooms[roomID].player2.color);
         }
     });
 
+    // Handle player moves and update FEN
     socket.on('move', (data) => {
+        rooms[data.roomID].fen = data.fen; // Store the current board state
         socket.to(data.roomID).emit('opponentMove', data.move);
     });
 

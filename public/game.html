@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PlayChess</title>
     <link rel="stylesheet" href="/css/style.css">
-    <link rel="icon" href="favicon.ico">
+    <link rel="icon" href="/favicon.ico">
 
     <!-- jQuery (Required for Chessboard.js) -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -21,11 +21,14 @@
     <!-- Socket.io -->
     <script src="/socket.io/socket.io.js"></script>
 </head>
-<body id="game-body">
+<body>
     <div id="player-info">
-        <p>Player 1 (Black): <span id="player1-name">Waiting for player 1...</span></p>
-        <p>Player 2 (White): <span id="player2-name">Waiting for player 2...</span></p>
+        <p>Player 1: <span id="player1-name">Waiting for the Player 1...</span> 
+        (<span id="player1-timer">05:00</span>)</p>
+        <p>Player 2: <span id="player2-name">Waiting for the Player 2...</span> 
+        (<span id="player2-timer">05:00</span>)</p>
     </div>
+    
 
     <!-- Chessboard display -->
     <div id="board" style="width: 300px"></div>
