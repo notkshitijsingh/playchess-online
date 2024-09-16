@@ -9,15 +9,25 @@ let roomID = window.location.pathname.split('/').pop();
 let player1Time = 300; // 5 minutes for Player 1
 let player2Time = 300; // 5 minutes for Player 2
 let timerInterval = null;
-let currentPlayer = 'white'; // White starts the game by default
+let currentPlayer = null; // This will be assigned randomly
+
+// Square colors for highlights
+let whiteSquareGrey = '#f4a261'; // Orange highlight color
+let blackSquareGrey = '#f4a261'; // Orange highlight color
 
 // Emit event to join the room and send player name
 socket.emit('joinRoom', { roomID, playerName });
 
 // Initialize the chessboard with the correct color and game state (FEN)
-function initializeChessBoard(color, fen) {
+function initializeChessBoard(color, fen, timers) {
     playerColor = color;
     game.load(fen); // Load the saved game state or start a new game if no FEN is provided
+
+    // Restore timers from the server
+    if (timers) {
+        player1Time = timers.player1Time;
+        player2Time = timers.player2Time;
+    }
 
     board = Chessboard('board', {
         draggable: true,
@@ -30,12 +40,13 @@ function initializeChessBoard(color, fen) {
     });
 
     startTimer(); // Start the timer once the board is initialized
+    updateTimers(); // Display the timers on the UI
 }
 
 // Update the timers for both players
 function updateTimers() {
-    document.getElementById('player1-timer').innerText = formatTime(player2Time);
-    document.getElementById('player2-timer').innerText = formatTime(player1Time);
+    document.getElementById('player1-timer').innerText = formatTime(player1Time);
+    document.getElementById('player2-timer').innerText = formatTime(player2Time);
 }
 
 // Format time to MM:SS
@@ -75,7 +86,22 @@ function startTimer() {
             }
         }
         updateTimers();
+
+        // Send the updated timers to the server to store the current state
+        socket.emit('updateTimers', { roomID, player1Time, player2Time });
     }, 1000); // Update every second
+}
+
+// Add a move to the move list
+function addMoveToList(move, color) {
+    const moveItem = document.createElement('div');
+    moveItem.classList.add('move-item', color); // Add appropriate classes
+    moveItem.innerText = move.san; // Use Standard Algebraic Notation for the move
+    if (color === 'white') {
+        document.getElementById('white-moves').appendChild(moveItem);
+    } else {
+        document.getElementById('black-moves').appendChild(moveItem);
+    }
 }
 
 // Handle move from the player
@@ -94,6 +120,9 @@ function handleMove(source, target) {
     // Emit the move to the opponent
     socket.emit('move', { roomID, fen: game.fen(), move });
 
+    // Add the move to the move list
+    addMoveToList(move, game.turn() === 'w' ? 'black' : 'white'); // Log the move in the list
+
     // Switch timer to the opponent's turn
     switchTimer();
 
@@ -101,11 +130,11 @@ function handleMove(source, target) {
     updateStatus();
 }
 
-
 // Handle receiving opponent's move
 socket.on('opponentMove', function(move) {
     game.move(move);
     board.position(game.fen());
+    addMoveToList(move, currentPlayer === 'white' ? 'black' : 'white'); // Log the move for the opponent
     switchTimer(); // Switch the timer back to the current player
     updateStatus();
 });
@@ -116,21 +145,22 @@ socket.on('roomJoined', function(players) {
     document.getElementById('player2-name').textContent = players.player2 || 'Waiting for player 2...';
 });
 
-// When both players are ready, initialize the chessboard with the proper color and game state
-socket.on('ready', function(fen, player1Color, player2Color) {
-    const playerColor = (playerName === document.getElementById('player1-name').textContent) ? player1Color : player2Color;
-    initializeChessBoard(playerColor, fen);
+// Fix for the Player 2 name not updating issue
+socket.on('updatePlayerNames', function(players) {
+    if (players.player1) document.getElementById('player1-name').textContent = players.player1;
+    if (players.player2) document.getElementById('player2-name').textContent = players.player2;
+});
 
-    // Assign turn based on color
-    if (playerColor === 'white') {
-        currentPlayer = 'white'; // White always starts the game
-    } else {
-        currentPlayer = 'black'; // Black will go second
-    }
+// When both players are ready, initialize the chessboard with the proper color and game state
+socket.on('ready', function(fen, player1Color, player2Color, timers) {
+    const playerColor = (playerName === document.getElementById('player1-name').textContent) ? player1Color : player2Color;
+    initializeChessBoard(playerColor, fen, timers);
+
+    // Randomly assign turn
+    currentPlayer = Math.random() > 0.5 ? 'white' : 'black';
 
     updateStatus();
 });
-
 
 // Update the game status (e.g., checkmate, draw)
 function updateStatus() {
@@ -200,7 +230,6 @@ function onDragStart(source, piece, position, orientation) {
         return false;
     }
 }
-
 
 // Remove highlights when the mouse leaves a square
 function onMouseoutSquare(square, piece) {

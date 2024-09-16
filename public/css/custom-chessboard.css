@@ -24,3 +24,50 @@
 .square-55d63 {
     transition: background 0.25s ease;
 }
+
+.square-55d63 {
+    background-color: #e6ead7; 
+}
+
+.square-55d63.black-3c85d {
+    background-color: #454d5f; 
+}
+
+.notation-322f9 {
+    color: #fff;
+    text-shadow: -1px -1px 0 #333, 1px -1px 0 #333, -1px 1px 0 #333, 1px 1px 0 #333;
+}
+
+/* Styling for the move list */
+#move-list {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    padding: 10px;
+    color: #fff;
+    background-color: #333;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    width: 150px;
+}
+
+.move-item {
+    display: inline-block;
+    padding: 5px 10px;
+    border-radius: 5px;
+    margin: 5px;
+    color: #fff; /* Text color */
+    font-family: Arial, sans-serif;
+    font-weight: bold;
+}
+
+.move-item.white {
+    background-color: #e6ead7; /* Light color for white pieces */
+    color: #454d5f; /* Dark text color */
+}
+
+.move-item.black {
+    background-color: #454d5f; /* Dark color for black pieces */
+    color: #e6ead7; /* Light text color */
+}

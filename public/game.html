@@ -28,10 +28,23 @@
         <p>Player 2: <span id="player2-name">Waiting for the Player 2...</span> 
         (<span id="player2-timer">05:00</span>)</p>
     </div>
-    
 
-    <!-- Chessboard display -->
-    <div id="board" style="width: 300px"></div>
+    <!-- Container to hold the board and the move list side by side -->
+    <div id="game-container" style="display: flex;">
+        <!-- Chessboard display -->
+        <div id="board" style="width: 300px"></div>
+
+        <!-- Move list display -->
+        <div id="move-list" style="margin-left: 20px;">
+            <h3>Moves</h3>
+            <div id="white-moves">
+                <h4>White Moves</h4>
+            </div>
+            <div id="black-moves">
+                <h4>Black Moves</h4>
+            </div>
+        </div>
+    </div>
 
     <!-- Game status -->
     <p id="status">Game status will appear here...</p>
