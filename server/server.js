@@ -17,52 +17,57 @@ app.get('/game/:roomID', (req, res) => {
     res.sendFile(path.join(__dirname, '../public/game.html'));
 });
 
-// Handle socket connections
 io.on('connection', (socket) => {
-    console.log('New client connected');
-
     socket.on('joinRoom', ({ roomID, playerName }) => {
+        // Create room if it doesn't exist
+        if (!rooms[roomID]) {
+            rooms[roomID] = {
+                player1: { name: playerName, color: 'white', time: 300 }, // 5 minutes for Player 1
+                player2: null,
+                fen: 'start'
+            };
+        } else if (!rooms[roomID].player2 && rooms[roomID].player1.name !== playerName) {
+            // Ensure Player 2 is set with a different name than Player 1
+            rooms[roomID].player2 = { name: playerName, color: 'black', time: 300 }; // 5 minutes for Player 2
+        }
+        
+
+        // Add the socket to the room
         socket.join(roomID);
 
-        if (!rooms[roomID]) {
-            // Initialize room if not present, with an empty game state and players
-            rooms[roomID] = { player1: { name: playerName, color: null }, player2: null, fen: 'start' };
-        } else if (!rooms[roomID].player2) {
-            rooms[roomID].player2 = { name: playerName, color: null };
-            
-            // Randomly assign colors to the players
-            const randomColor = Math.random() > 0.5 ? 'white' : 'black';
-            rooms[roomID].player1.color = randomColor;
-            rooms[roomID].player2.color = randomColor === 'white' ? 'black' : 'white';
-        }
-
-        const players = {
+        // Send player names to both clients
+        io.to(roomID).emit('updatePlayerNames', {
             player1: rooms[roomID].player1.name,
-            player2: rooms[roomID].player2 ? rooms[roomID].player2.name : null,
-        };
+            player2: rooms[roomID].player2 ? rooms[roomID].player2.name : null
+        });
 
-        // Send player names to both players
-        io.to(roomID).emit('roomJoined', players);
-
-        const playerCount = rooms[roomID].player2 ? 2 : 1;
-
-        // Send game state and player colors once both players have joined
-        if (playerCount === 2) {
-            io.to(roomID).emit('ready', rooms[roomID].fen, rooms[roomID].player1.color, rooms[roomID].player2.color);
+        // If both players have joined, start the game
+        if (rooms[roomID].player1 && rooms[roomID].player2) {
+            io.to(roomID).emit('ready', rooms[roomID].fen, rooms[roomID].player1.color, rooms[roomID].player2.color, {
+                player1Time: rooms[roomID].player1.time,
+                player2Time: rooms[roomID].player2.time
+            });
         }
     });
 
-    // Handle player moves and update FEN
-    socket.on('move', (data) => {
-        rooms[data.roomID].fen = data.fen; // Store the current board state
-        socket.to(data.roomID).emit('opponentMove', data.move);
+    // Handle moves and update the game state (FEN)
+    socket.on('move', ({ roomID, fen, move }) => {
+        if (rooms[roomID]) {
+            rooms[roomID].fen = fen;
+            socket.to(roomID).emit('opponentMove', move);
+        }
     });
 
-    socket.on('disconnect', () => {
-        console.log('Client disconnected');
+    // Handle timer updates
+    socket.on('updateTimers', ({ roomID, player1Time, player2Time }) => {
+        if (rooms[roomID]) {
+            rooms[roomID].player1.time = player1Time;
+            rooms[roomID].player2.time = player2Time;
+        }
     });
 });
 
-// Server listens on port 3000 or another specified port
 const PORT = process.env.PORT || 3000;
-server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+server.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+});

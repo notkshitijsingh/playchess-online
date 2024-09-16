@@ -2,8 +2,12 @@ const socket = io();
 let board = null;
 let game = new Chess();
 let playerColor = null;
-let playerName = prompt("Enter your name");
 let roomID = window.location.pathname.split('/').pop();
+
+// Check if player name exists in sessionStorage for this room, otherwise prompt for it
+let playerName = sessionStorage.getItem(`playerName_${roomID}`) || prompt("Enter your name for this room");
+sessionStorage.setItem(`playerName_${roomID}`, playerName);
+
 
 // Timer variables (in seconds)
 let player1Time = 300; // 5 minutes for Player 1
@@ -63,7 +67,10 @@ function switchTimer() {
     } else {
         currentPlayer = 'white';
     }
+
+    startTimer(); // Start the timer for the newly switched player
 }
+
 
 // Start the timer for the current player
 function startTimer() {
@@ -91,6 +98,7 @@ function startTimer() {
         socket.emit('updateTimers', { roomID, player1Time, player2Time });
     }, 1000); // Update every second
 }
+
 
 // Add a move to the move list
 function addMoveToList(move, color) {
@@ -156,11 +164,13 @@ socket.on('ready', function(fen, player1Color, player2Color, timers) {
     const playerColor = (playerName === document.getElementById('player1-name').textContent) ? player1Color : player2Color;
     initializeChessBoard(playerColor, fen, timers);
 
-    // Randomly assign turn
-    currentPlayer = Math.random() > 0.5 ? 'white' : 'black';
+    // Assign the correct current player (white always starts)
+    currentPlayer = (game.turn() === 'w') ? 'white' : 'black';
 
     updateStatus();
+    startTimer(); // Start the timer only after the board is initialized and currentPlayer is set
 });
+
 
 // Update the game status (e.g., checkmate, draw)
 function updateStatus() {
