@@ -71,11 +71,11 @@ Make sure you have Node.js installed on your system. You can download it [here](
 
 3. **Start the Server**:
    ```bash
-   node server/server.js
+   npm start
    ```
 
 4. **Access the Game**:
-   Open your browser and go to `http://localhost:3000/game.html`.
+   Open your browser and go to `http://localhost:3000/`.
 
 ## How to Play
 
