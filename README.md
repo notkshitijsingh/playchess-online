@@ -1,7 +1,3 @@
-Here's a detailed README file you can use as a starting point for your PlayChess project:
-
----
-
 # PlayChess Online
 
 PlayChess Online is a multiplayer chess game built using HTML, CSS, JavaScript, Node.js, and WebSocket for real-time interactions. The app allows players to join a game room, see each other’s names and avatars, and track game progress with move lists and individual timers. 
