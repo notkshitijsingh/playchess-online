@@ -125,7 +125,3 @@ We welcome contributions! Here’s how you can help:
 ## License
 
 Distributed under the MIT License. See `LICENSE` for more information.
-
----
-
-Feel free to update this document as the project evolves!
